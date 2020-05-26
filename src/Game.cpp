@@ -66,11 +66,13 @@ void Game::ProcessInput(){
 }
 
 void Game::Update(){
-    while(!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TARGET_TIME));
+    int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks()-ticksLastFrame);
+    if(timeToWait > 0 && timeToWait <=FRAME_TARGET_TIME){
+        SDL_Delay(timeToWait);
+    }
     float deltaTime = (SDL_GetTicks() - ticksLastFrame)/1000.0f;
     deltaTime = (deltaTime > 0.05) ? 0.05f : deltaTime;
-    ticksLastFrame = SDL_GetTicks();
-    
+    ticksLastFrame = SDL_GetTicks();   
     projectTilePosX += projectTileVelX * deltaTime;
     projectTilePosY += projectTileVelY * deltaTime;
     
