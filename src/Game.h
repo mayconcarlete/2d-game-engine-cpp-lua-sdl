@@ -14,7 +14,7 @@ class Game{
         Game();
         ~Game();
         bool IsRunning() const;
-        int ticksLastFrame;
+        Uint32 ticksLastFrame = 0;
         void Initialize(int width, int height);
         void ProcessInput();
         void Update();

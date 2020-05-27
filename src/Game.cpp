@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./Constants.h"
 #include "./Game.h"
+#include "../lib/glm/glm.hpp"
 
 Game::Game(){
     this->isRunning = false;
@@ -14,10 +15,9 @@ Game::~Game(){
 bool Game::IsRunning() const{
     return this->isRunning;
 }
-float projectTilePosX = 0.0f;
-float projectTilePosY = 0.0f;
-float projectTileVelX = 20.0f;
-float projectTileVelY = 10.0f;
+
+glm::vec2 projectTilePos = glm::vec2(0.0f, 0.0f);
+glm::vec2 projectTileVel = glm::vec2(20.0f, 20.0f);
 
 void Game::Initialize(int width, int height){
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -67,14 +67,16 @@ void Game::ProcessInput(){
 
 void Game::Update(){
     int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks()-ticksLastFrame);
-    if(timeToWait > 0 && timeToWait <=FRAME_TARGET_TIME){
+    if(timeToWait > 0 && timeToWait <= FRAME_TARGET_TIME){
         SDL_Delay(timeToWait);
     }
     float deltaTime = (SDL_GetTicks() - ticksLastFrame)/1000.0f;
     deltaTime = (deltaTime > 0.05) ? 0.05f : deltaTime;
     ticksLastFrame = SDL_GetTicks();   
-    projectTilePosX += projectTileVelX * deltaTime;
-    projectTilePosY += projectTileVelY * deltaTime;
+    projectTilePos= glm::vec2(
+        projectTilePos.x += projectTileVel.x * deltaTime,
+        projectTilePos.y += projectTileVel.y * deltaTime
+    );
     
 }
 
@@ -82,8 +84,8 @@ void Game::Render(){
     SDL_SetRenderDrawColor(renderer, 21,21,21,255);
     SDL_RenderClear(renderer);
     SDL_Rect projectTile{
-        (int)projectTilePosX,
-        (int)projectTilePosY,
+        (int)projectTilePos.x,
+        (int)projectTilePos.y,
         10,
         10
     };
