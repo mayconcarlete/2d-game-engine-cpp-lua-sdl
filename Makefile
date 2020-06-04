@@ -1,6 +1,10 @@
 build:
 	g++ -w -std=c++14 -Wfatal-errors \
 	./src/*.cpp \
+	./src/Entity/*.cpp \
+	./src/EntityManager/*.cpp \
+	./src/AssetManager/*.cpp \
+	./src/TextureManager/*.cpp \
 	-o game \
 	-I"./lib/lua" \
 	-L"./lib/lua" \

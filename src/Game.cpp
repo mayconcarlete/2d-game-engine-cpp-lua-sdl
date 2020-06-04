@@ -1,12 +1,20 @@
 #include <iostream>
 #include "./Constants.h"
 #include "./Game.h"
+#include "./AssetManager/AssetManager.h"
+#include "./Components-parts/TransformComponent.h"
+#include "./Components-parts/SpriteComponent.h"
 #include "../lib/glm/glm.hpp"
+
+//ListAllEntities()
+//ListAllComponents()
+
+EntityManager manager;
+AssetManager* Game::assetManager = new AssetManager(&manager);
+SDL_Renderer* Game::renderer;
 
 Game::Game(){
     this->isRunning = false;
-    std::cout<<"Valor de renderer1: " <<this->renderer<<"\n";
-    std::cout<<"Valor do ponteiro: " <<&renderer<<"\n";
 }
 
 Game::~Game(){
@@ -15,9 +23,6 @@ Game::~Game(){
 bool Game::IsRunning() const{
     return this->isRunning;
 }
-
-glm::vec2 projectTilePos = glm::vec2(0.0f, 0.0f);
-glm::vec2 projectTileVel = glm::vec2(20.0f, 20.0f);
 
 void Game::Initialize(int width, int height){
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -41,11 +46,24 @@ void Game::Initialize(int width, int height){
         std::cerr <<"Redeerer error"<<"\n";
         return;
     }
-  isRunning = true;
+    LoadLevel(0);
+    isRunning = true;
   return;  
+}
+void Game::LoadLevel(int levelNumber){
+    std::string textureFilePath = "./assets/images/tank-big-right.png";
+    assetManager->AddTexture("tank-image", textureFilePath.c_str());
+    Entity& newEntity(manager.AddEntity("tank"));
+    newEntity.AddComponent<TransformComponent>(0,0,20,20,32,32,1);
+    newEntity.AddComponent<SpriteComponent>("tank-image");
+   /* Entity& entityA(manager.AddEntity("Formiga"));
+    entityA.AddComponent<TransformComponent>(200,200,20,20,32,32,1);
+    entityA.AddComponent<TransformComponent>(500,500,20,0,32,32,1);
+    manager.ListAllEntities();*/
 }
 
 void Game::ProcessInput(){
+   
     SDL_Event event;
     SDL_PollEvent(&event);
     switch (event.type)
@@ -57,6 +75,7 @@ void Game::ProcessInput(){
     
     case SDL_KEYDOWN:{
         if(event.key.keysym.sym == SDLK_ESCAPE){
+            std::cout<<"CLicou no ESC"<<"\n";
             isRunning = false;
         }
     }
@@ -73,24 +92,18 @@ void Game::Update(){
     float deltaTime = (SDL_GetTicks() - ticksLastFrame)/1000.0f;
     deltaTime = (deltaTime > 0.05) ? 0.05f : deltaTime;
     ticksLastFrame = SDL_GetTicks();   
-    projectTilePos= glm::vec2(
-        projectTilePos.x += projectTileVel.x * deltaTime,
-        projectTilePos.y += projectTileVel.y * deltaTime
-    );
-    
+    manager.Update(deltaTime);
 }
 
 void Game::Render(){
     SDL_SetRenderDrawColor(renderer, 21,21,21,255);
     SDL_RenderClear(renderer);
-    SDL_Rect projectTile{
-        (int)projectTilePos.x,
-        (int)projectTilePos.y,
-        10,
-        10
-    };
-    SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-    SDL_RenderFillRect(renderer, &projectTile);
+
+    if(manager.HasNoEntities()){
+        return;
+    }
+    manager.Render();
+
     SDL_RenderPresent(renderer);
 }
 void Game::Destroy(){
