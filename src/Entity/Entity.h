@@ -2,6 +2,7 @@
 #define ENTITY_H
 #include <vector>
 #include <string>
+#include <iostream>
 #include <map>
 #include "../EntityManager/EntityManager.h"
 #include"../Entity/Entity.h"
@@ -37,6 +38,23 @@ class Entity{
         template <typename T>
         T* GetComponent(){
             return static_cast<T*>(componentTypeMap[&typeid(T)]);
+        }
+        template <typename T>
+        bool HasComponent() const {
+            bool result = false;
+            for(auto& componentType: componentTypeMap){
+                std::cout<< "Component Type: "<< componentType.first <<"\n";
+               // std::cout<< "Component Type2: "<< componentType.first <<"\n";
+                std::cout<<"Component Address: "<< &typeid(T*) <<"\n";
+                std::cout<<"Component Address: "<< &typeid(T) <<"\n";
+                std::cout<<"Component Address: "<< &typeid(T) <<"\n";
+               // std::cout<<"Component T: "<<typeid(T*).name()<<"\n";
+                
+                //std::cout<<"Nome: " << typeid(&componentType.first).name() <<"\n";
+                //std::cout<< "Por type:"<<&typeid(T) <<"\n";
+                //std::cout<< typeid(&(componentType.first)).name() <<"\n";
+            }
+            std::cout<<result<<"\n";
         }
 };
 

@@ -5,6 +5,7 @@ build:
 	./src/EntityManager/*.cpp \
 	./src/AssetManager/*.cpp \
 	./src/TextureManager/*.cpp \
+	./src/Components-parts/*.cpp \
 	-o game \
 	-I"./lib/lua" \
 	-L"./lib/lua" \
