@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(SDL3 CONFIG REQUIRED)
+find_package(SDL3_image CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Lua REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
@@ -20,6 +21,7 @@ target_include_directories(game-engine PRIVATE src)
 
 target_link_libraries(game-engine PRIVATE
     SDL3::SDL3
+    SDL3_image::SDL3_image
     glm::glm
     sol2::sol2
     ${LUA_LIBRARIES}

@@ -4,6 +4,7 @@
 #include <format>
 
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 
 Game::Game(){
     const auto text = std::format("Hey hey");
@@ -88,11 +89,29 @@ void Game::Render(){
     SDL_SetRenderDrawColor(m_renderer, 21, 21, 21, 255);
     SDL_RenderClear(m_renderer);
     
-    // Todo Render all game object`s
-    SDL_FRect player = {.x=10, .y=10, .w=20, .h=20};
-    SDL_SetRenderDrawColor(m_renderer, 255, 255,255,255);
-    SDL_RenderFillRect(m_renderer, &player);
+    // // Todo Render all game object`s
+    // SDL_FRect player = {.x=10, .y=10, .w=20, .h=20};
+    // SDL_SetRenderDrawColor(m_renderer, 255, 255,255,255);
+    // SDL_RenderFillRect(m_renderer, &player);
+
+    // Loads a PNG texture
+    SDL_Surface *surface = IMG_Load("./assets/images/tank-big-right.png");
+    if(!surface){
+        std::cerr << "Error loading surface: " << SDL_GetError() <<"\n";
+        return; 
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(m_renderer, surface);
+    if(!texture){
+        std::cerr << "Error loading texture: " << SDL_GetError() << "\n";
+        return;
+    }
+    SDL_DestroySurface(surface);
+
+    SDL_FRect dest = {.x=10.0, .y=10.0, .w=32.0, .h=32.0};
+    SDL_RenderTexture(m_renderer, texture, NULL, &dest);
+    SDL_DestroyTexture(texture);
     
+
     SDL_RenderPresent(m_renderer);
 }
 
