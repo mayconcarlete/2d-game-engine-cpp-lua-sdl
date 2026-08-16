@@ -10,6 +10,7 @@ const std::uint64_t NANO_SECONDS_PER_FRAME = ONE_SECOND_IN_NANO/FPS;
 class Game {
     private:
         bool m_is_running;
+        float m_delta_time;
         SDL_Window *m_window;
         SDL_Renderer *m_renderer;
         std::uint64_t m_start_frame_nano_seconds = 0;

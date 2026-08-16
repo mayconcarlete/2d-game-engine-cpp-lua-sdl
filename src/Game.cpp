@@ -58,17 +58,21 @@ void Game::Run(){
     Setup();
     
     std::uint32_t fps_counter = 0;
-    std::uint64_t now;
-    std::uint64_t fps_anchor = SDL_GetTicksNS();
-    std::uint64_t next_deadline = SDL_GetTicksNS() + NANO_SECONDS_PER_FRAME;
+    std::uint64_t current_tick = SDL_GetTicksNS();
+    std::uint64_t now = current_tick;
+    std::uint64_t fps_anchor = current_tick;
+    std::uint64_t next_deadline = current_tick + NANO_SECONDS_PER_FRAME;
+    std::uint64_t previous_frame_ns= current_tick;
 
     while(m_is_running){
         ProcessInput();
+        m_delta_time = static_cast<float>(now - previous_frame_ns)/1000000000.0f;
         Update();
         Render();
         
+        previous_frame_ns = now;
         now = SDL_GetTicksNS();
-        
+
         fps_counter++;
         if(now - fps_anchor >= ONE_SECOND_IN_NANO){
             fps_anchor+=ONE_SECOND_IN_NANO;
