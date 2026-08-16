@@ -56,38 +56,31 @@ void Game::Initialize(){
 
 void Game::Run(){
     Setup();
-    std::uint64_t fps_tracker = 0;
-    std::uint64_t fps_tracker_init = SDL_GetTicksNS();
-
+    
     std::uint32_t fps_counter = 0;
+    std::uint64_t now;
+    std::uint64_t fps_anchor = SDL_GetTicksNS();
+    std::uint64_t next_deadline = SDL_GetTicksNS() + NANO_SECONDS_PER_FRAME;
 
-    std::uint64_t spent_time = 0;
-    std::uint64_t last_time = 0;
     while(m_is_running){
-        m_start_frame_nano_seconds = SDL_GetTicksNS();
-
-        fps_tracker += SDL_GetTicksNS() - fps_tracker_init;
-        std::cout << "fps_trakcer: " << fps_tracker << "\n";
-        fps_counter++;
-        if(fps_tracker >= 1000000000){
-            std::cout << "FPS: " << fps_counter << "\n";
-            fps_tracker = 0;
-            fps_counter = 0;
-        }
-        fps_tracker_init = SDL_GetTicksNS();
-
         ProcessInput();
         Update();
         Render();
-
-       
         
-        spent_time = SDL_GetTicksNS() - last_time;
-         if(spent_time < MILLISECONDS_PER_FRAME){
-            const auto sleep_time = MILLISECONDS_PER_FRAME - spent_time;
-            SDL_DelayPrecise(sleep_time);
+        now = SDL_GetTicksNS();
+        
+        fps_counter++;
+        if(now - fps_anchor >= ONE_SECOND_IN_NANO){
+            fps_anchor+=ONE_SECOND_IN_NANO;
+            std::cout << "[FPS] - " << fps_counter << "\n";
+            fps_counter = 0;
         }
-        last_time = SDL_GetTicksNS();
+
+        if(now < next_deadline){
+            SDL_DelayPrecise(next_deadline - now);
+        }
+
+        next_deadline += NANO_SECONDS_PER_FRAME;
     }
 }
 

@@ -2,8 +2,10 @@
 
 #include <cstdint>
 #include <SDL3/SDL.h>
-const int FPNS = 100;
-const int MILLISECONDS_PER_FRAME = 1000000000/FPNS;
+
+const std::uint64_t ONE_SECOND_IN_NANO = 1000000000;
+const std::uint64_t FPS = 100;
+const std::uint64_t NANO_SECONDS_PER_FRAME = ONE_SECOND_IN_NANO/FPS;
 
 class Game {
     private:
