@@ -63,10 +63,12 @@ void Game::Run(){
     std::uint64_t fps_anchor = current_tick;
     std::uint64_t next_deadline = current_tick + NANO_SECONDS_PER_FRAME;
     std::uint64_t previous_frame_ns= current_tick;
+    float max_delta_time = 0.05f;
 
     while(m_is_running){
         ProcessInput();
         m_delta_time = static_cast<float>(now - previous_frame_ns)/1000000000.0f;
+        if(m_delta_time > max_delta_time) m_delta_time = max_delta_time;
         Update();
         Render();
         
@@ -75,7 +77,7 @@ void Game::Run(){
 
         fps_counter++;
         if(now - fps_anchor >= ONE_SECOND_IN_NANO){
-            fps_anchor+=ONE_SECOND_IN_NANO;
+            fps_anchor += ONE_SECOND_IN_NANO;
             std::cout << "[FPS] - " << fps_counter << "\n";
             fps_counter = 0;
         }
@@ -112,13 +114,13 @@ glm::vec2 playerVelocity;
 
 void Game::Setup(){
     playerPosition = glm::vec2(10.0, 20.0);
-    playerVelocity = glm::vec2(0.4, 0.0);
+    playerVelocity = glm::vec2(100.0, 0.0);
 }
 
 
 void Game::Update(){
-   playerPosition.x += playerVelocity.x;
-   playerPosition.y += playerVelocity.y;
+   playerPosition.x += playerVelocity.x * m_delta_time;
+   playerPosition.y += playerVelocity.y * m_delta_time;
 }
 
 void Game::Render(){
