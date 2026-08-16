@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <format>
+#include <cstdint>
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <glm/glm.hpp>
 
 Game::Game(){
     const auto text = std::format("Hey hey");
@@ -47,16 +49,45 @@ void Game::Initialize(){
     }
 
     // seta o video mode para full screen
-    SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
+    // SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 
     m_is_running = true;
 }
 
 void Game::Run(){
+    Setup();
+    std::uint64_t fps_tracker = 0;
+    std::uint64_t fps_tracker_init = SDL_GetTicksNS();
+
+    std::uint32_t fps_counter = 0;
+
+    std::uint64_t spent_time = 0;
+    std::uint64_t last_time = 0;
     while(m_is_running){
+        m_start_frame_nano_seconds = SDL_GetTicksNS();
+
+        fps_tracker += SDL_GetTicksNS() - fps_tracker_init;
+        std::cout << "fps_trakcer: " << fps_tracker << "\n";
+        fps_counter++;
+        if(fps_tracker >= 1000000000){
+            std::cout << "FPS: " << fps_counter << "\n";
+            fps_tracker = 0;
+            fps_counter = 0;
+        }
+        fps_tracker_init = SDL_GetTicksNS();
+
         ProcessInput();
         Update();
         Render();
+
+       
+        
+        spent_time = SDL_GetTicksNS() - last_time;
+         if(spent_time < MILLISECONDS_PER_FRAME){
+            const auto sleep_time = MILLISECONDS_PER_FRAME - spent_time;
+            SDL_DelayPrecise(sleep_time);
+        }
+        last_time = SDL_GetTicksNS();
     }
 }
 
@@ -79,11 +110,19 @@ void Game::ProcessInput(){
     }
 }
 
-void Game::Setup(){
+glm::vec2 playerPosition;
+glm::vec2 playerVelocity;
 
+void Game::Setup(){
+    playerPosition = glm::vec2(10.0, 20.0);
+    playerVelocity = glm::vec2(0.4, 0.0);
 }
 
-void Game::Update(){}
+
+void Game::Update(){
+   playerPosition.x += playerVelocity.x;
+   playerPosition.y += playerVelocity.y;
+}
 
 void Game::Render(){
     SDL_SetRenderDrawColor(m_renderer, 21, 21, 21, 255);
@@ -107,7 +146,7 @@ void Game::Render(){
     }
     SDL_DestroySurface(surface);
 
-    SDL_FRect dest = {.x=10.0, .y=10.0, .w=32.0, .h=32.0};
+    SDL_FRect dest = {.x=playerPosition.x, .y=playerPosition.y, .w=32.0, .h=32.0};
     SDL_RenderTexture(m_renderer, texture, NULL, &dest);
     SDL_DestroyTexture(texture);
     
