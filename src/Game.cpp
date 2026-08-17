@@ -22,12 +22,12 @@ void Game::Initialize(){
     }
 
     const auto window_title = "My Game Window";
-    Logger::Info(window_title);
     // Região de código para pegar os dados da janela pegando do Display/Monitor que está sendo usado.
     const auto current_display = SDL_GetPrimaryDisplay();
     const SDL_DisplayMode *display_mode = SDL_GetCurrentDisplayMode(current_display);
     if(!display_mode){
-        std::cerr << "Error Getting display mode! " << SDL_GetError() << "\n";
+        const auto text = std::format("Error Getting display mode! - {}", SDL_GetError());
+        Logger::Error(text);
         return;
     }
     // m_window_width = display_mode->w;
@@ -37,13 +37,15 @@ void Game::Initialize(){
     m_window_height = 600;
     m_window = SDL_CreateWindow(window_title, m_window_width, m_window_height, SDL_WINDOW_BORDERLESS);
     if(!m_window){
-        std::cerr << "Error initialing Window! " << SDL_GetError() << "\n";
+        const auto text = std::format("Error initialing Window! - {}", SDL_GetError());
+        Logger::Error(text);
         return;
     }
 
     m_renderer = SDL_CreateRenderer(m_window, NULL);
     if(!m_renderer){
-        std::cerr << "Error initializing Renderer! " << SDL_GetError() << "\n";
+        const auto text = std::format("Error initializing Renderer! - {}", SDL_GetError());
+        Logger::Error(text);
         return;
     }
 
@@ -77,7 +79,8 @@ void Game::Run(){
         fps_counter++;
         if(now - fps_anchor >= ONE_SECOND_IN_NANO){
             fps_anchor += ONE_SECOND_IN_NANO;
-            std::cout << "[FPS] - " << fps_counter << "\n";
+            const auto text = std::format("[FPS] - {}", fps_counter);
+            Logger::Info(text);
             fps_counter = 0;
         }
 
@@ -134,12 +137,14 @@ void Game::Render(){
     // Loads a PNG texture
     SDL_Surface *surface = IMG_Load("./assets/images/tank-big-right.png");
     if(!surface){
-        std::cerr << "Error loading surface: " << SDL_GetError() <<"\n";
+        const auto text = std::format("Error loading surface! - {}", SDL_GetError());
+        Logger::Error(text);
         return; 
     }
     SDL_Texture *texture = SDL_CreateTextureFromSurface(m_renderer, surface);
     if(!texture){
-        std::cerr << "Error loading texture: " << SDL_GetError() << "\n";
+        const auto text = std::format("Error loading texture! - {}", SDL_GetError());
+        Logger::Error(text);
         return;
     }
     SDL_DestroySurface(surface);
