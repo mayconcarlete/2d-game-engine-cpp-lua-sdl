@@ -7,7 +7,12 @@
     "lua",
     "sol2",
     "glm",
-    "sdl3",
+    {
+      "name": "sdl3",
+      "features": [
+        "alsa"
+      ]
+    },
     {
       "name": "sdl3-image",
       "features": [
