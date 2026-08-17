@@ -1,9 +1,9 @@
-#include "Game.hpp"
+#include <Game/Game.hpp>
 
 #include <iostream>
 #include <format>
 #include <cstdint>
-#include "Logger.hpp"
+#include <Logger/Logger.hpp>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <glm/glm.hpp>
@@ -111,48 +111,26 @@ void Game::ProcessInput(){
     }
 }
 
-glm::vec2 playerPosition;
-glm::vec2 playerVelocity;
-
 void Game::Setup(){
-    playerPosition = glm::vec2(10.0, 20.0);
-    playerVelocity = glm::vec2(100.0, 0.0);
+// Todo
+// Entity tank = registry.CreateEntity();
+// tank.AddComponent<TransformComponent>();
+// tank.AddComponent<BoxColliderComponent>()
+// tank.AddComponent<SpriteComponent>();
 }
 
 
 void Game::Update(){
-   playerPosition.x += playerVelocity.x * m_delta_time;
-   playerPosition.y += playerVelocity.y * m_delta_time;
+    // MovementeSystem.Update(m_delta_time);
+    // Collision system
+    // DamageSystem
 }
 
 void Game::Render(){
     SDL_SetRenderDrawColor(m_renderer, 21, 21, 21, 255);
     SDL_RenderClear(m_renderer);
     
-    // // Todo Render all game object`s
-    // SDL_FRect player = {.x=10, .y=10, .w=20, .h=20};
-    // SDL_SetRenderDrawColor(m_renderer, 255, 255,255,255);
-    // SDL_RenderFillRect(m_renderer, &player);
-
-    // Loads a PNG texture
-    SDL_Surface *surface = IMG_Load("./assets/images/tank-big-right.png");
-    if(!surface){
-        const auto text = std::format("Error loading surface! - {}", SDL_GetError());
-        Logger::Error(text);
-        return; 
-    }
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(m_renderer, surface);
-    if(!texture){
-        const auto text = std::format("Error loading texture! - {}", SDL_GetError());
-        Logger::Error(text);
-        return;
-    }
-    SDL_DestroySurface(surface);
-
-    SDL_FRect dest = {.x=playerPosition.x, .y=playerPosition.y, .w=32.0, .h=32.0};
-    SDL_RenderTexture(m_renderer, texture, NULL, &dest);
-    SDL_DestroyTexture(texture);
-    
+    // REnder Game Objects
 
     SDL_RenderPresent(m_renderer);
 }

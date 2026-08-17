@@ -12,18 +12,16 @@ find_package(glm CONFIG REQUIRED)
 find_package(Lua REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 
+add_subdirectory(src/Logger)
+add_subdirectory(src/Game)
+
 add_executable(game-engine
     src/main.cpp
-    src/game.cpp
-    src/Logger.cpp
 )
 
-target_include_directories(game-engine PRIVATE src)
-
 target_link_libraries(game-engine PRIVATE
-    SDL3::SDL3
-    SDL3_image::SDL3_image
-    glm::glm
+    Game
+    Logger
     sol2::sol2
     ${LUA_LIBRARIES}
 )
