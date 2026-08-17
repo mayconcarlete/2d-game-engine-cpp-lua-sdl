@@ -22,10 +22,16 @@ namespace {
     }
 }
 
+std::vector<LoggerEntry> Logger::messages;
+
 void Logger::Info(const std::string& message){
-    std::cout << GREEN << std::format("[INFO] - {:%Y-%m-%d %H:%M:%S} - ", Now()) << message << RESET << "\n";
+    const auto entry = std::format("[INFO] - {:%Y-%m-%d %H:%M:%S} - {}", Now(), message);
+    messages.push_back({LoggerType::LOGGER_INFO, entry});
+    std::cout << GREEN << entry << RESET << "\n";
 }
 
 void Logger::Error(const std::string& message){
-    std::cout << RED << std::format("[ERROR] - {:%Y-%m-%d %H:%M:%S} - ", Now()) << message << RESET << "\n";
+    const auto entry = std::format("[ERROR] - {:%Y-%m-%d %H:%M:%S} - {}", Now(), message);
+    messages.push_back({LoggerType::LOGGER_ERROR, entry});
+    std::cout << RED << entry << RESET << "\n";
 }
