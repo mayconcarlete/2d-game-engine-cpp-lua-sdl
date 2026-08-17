@@ -3,14 +3,12 @@
 #include <iostream>
 #include <format>
 #include <cstdint>
-
+#include "Logger.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <glm/glm.hpp>
 
 Game::Game(){
-    const auto text = std::format("Hey hey");
-    std::cout << text << "\n";
     m_is_running = false;
 }
 
@@ -18,12 +16,13 @@ Game::~Game(){}
 
 void Game::Initialize(){
     if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD)){
-        std::cerr << "Error initializing SDL! " << SDL_GetError() << "\n";
+        const auto text = std::format("Error initializing SDL! - {}", SDL_GetError());
+        Logger::Error(text);
         return;
     }
 
     const auto window_title = "My Game Window";
- 
+    Logger::Info(window_title);
     // Região de código para pegar os dados da janela pegando do Display/Monitor que está sendo usado.
     const auto current_display = SDL_GetPrimaryDisplay();
     const SDL_DisplayMode *display_mode = SDL_GetCurrentDisplayMode(current_display);

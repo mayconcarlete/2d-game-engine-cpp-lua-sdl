@@ -15,6 +15,7 @@ find_package(sol2 CONFIG REQUIRED)
 add_executable(game-engine
     src/main.cpp
     src/game.cpp
+    src/Logger.cpp
 )
 
 target_include_directories(game-engine PRIVATE src)
